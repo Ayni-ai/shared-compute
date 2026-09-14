@@ -22,7 +22,7 @@ func (s *Server) handleInstallScript(w http.ResponseWriter, _ *http.Request) {
 	if modelURL == "" {
 		modelURL = "https://models.ayni-ai.com"
 	}
-	repo := "https://github.com/mcastroarroyo/shared-compute"
+	repo := "https://github.com/Ayni-ai/shared-compute"
 	appBase := s.cfg.AppURL
 	if appBase == "" {
 		appBase = "https://app.ayni-ai.com"
