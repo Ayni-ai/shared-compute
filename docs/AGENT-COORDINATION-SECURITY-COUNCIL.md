@@ -2,14 +2,14 @@
 
 This is the shared handoff contract between the marketplace/platform workstream and the
 security/Council workstream. Read it before changing files touched by PR
-[#1](https://github.com/mcastroarroyo/shared-compute/pull/1).
+[#1](https://github.com/Ayni-ai/shared-compute/pull/1).
 
 ## Active workstream
 
 | Item | Value |
 |---|---|
 | Security branch | `codex/security-harness-council-v01` |
-| Pull request | [#1 — Ayni Security v0.1](https://github.com/mcastroarroyo/shared-compute/pull/1) |
+| Pull request | [#1 — Ayni Security v0.1](https://github.com/Ayni-ai/shared-compute/pull/1) |
 | Security owner | This Codex session |
 | Marketplace owner | Parallel cloud cowork agent |
 | Merge authority | Human project owner |

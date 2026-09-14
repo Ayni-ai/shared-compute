@@ -36,7 +36,7 @@ You need Python 3.10 or newer and an Ayni API key (section 3).
 **From the repository, no install step:**
 
 ```bash
-git clone https://github.com/mcastroarroyo/shared-compute
+git clone https://github.com/Ayni-ai/shared-compute
 ```
 
 The command for every client below is then:
@@ -50,7 +50,7 @@ with the environment variable `PYTHONPATH` set to `<clone>/clients/python`.
 **As a package (gives you an `ayni-mcp` command):**
 
 ```bash
-pip install "git+https://github.com/mcastroarroyo/shared-compute#subdirectory=clients/python"
+pip install "git+https://github.com/Ayni-ai/shared-compute#subdirectory=clients/python"
 ```
 
 **Check it works** before wiring a client. This prints what `ayni_status` would return:

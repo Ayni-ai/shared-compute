@@ -9,7 +9,7 @@
 | Investor demo | https://demo.ayni-ai.com | Cloudflare Pages `ayni-demo` (root dir `demo`); needs `SC_DEMO_ENABLED=1` + a demo node |
 | Operator console | https://ayni-console.pages.dev | Cloudflare Pages `ayni-console` (auto-deploy on push to `main`) |
 | Provider binaries | github releases `provider-latest` | `release-provider` workflow (rolling + per-tag) |
-| Source | github.com/mcastroarroyo/shared-compute (private) | GitHub Actions CI on every push |
+| Source | github.com/Ayni-ai/shared-compute (private) | GitHub Actions CI on every push |
 
 ## Android provider — M5 (verified)
 

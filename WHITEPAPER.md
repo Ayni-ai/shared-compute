@@ -1,7 +1,7 @@
 # Ayni: a community network for private, shared AI inference
 
 **Draft v0.2 — 2026-08**
-Zalesgen LLC · Apache 2.0 · https://github.com/mcastroarroyo/shared-compute
+Zalesgen LLC · Apache 2.0 · https://github.com/Ayni-ai/shared-compute
 
 ---
 
@@ -369,7 +369,7 @@ rather than redundancy-based (§4.3); the `cryptographic` trust tier (FHE / MPC,
 ## Appendix: reproduce it
 
 ```bash
-git clone https://github.com/mcastroarroyo/shared-compute
+git clone https://github.com/Ayni-ai/shared-compute
 cd shared-compute
 make dev     # coordinator + one local provider
 make e2e     # encrypted round-trip: streaming + blocking, cancellation,

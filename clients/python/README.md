@@ -24,7 +24,7 @@ quote, run and collect workloads, and triage security logs, with a price cap on 
 spend.
 
 ```bash
-pip install "git+https://github.com/mcastroarroyo/shared-compute#subdirectory=clients/python"
+pip install "git+https://github.com/Ayni-ai/shared-compute#subdirectory=clients/python"
 AYNI_API_KEY=sc_live_... ayni-mcp --selfcheck
 ```
 

@@ -10,7 +10,7 @@ Any ~2 vCPU / 4 GB Linux box with Docker (Hetzner CX22, DigitalOcean, Fly
 machine, a spare desktop):
 
 ```bash
-git clone https://github.com/mcastroarroyo/shared-compute
+git clone https://github.com/Ayni-ai/shared-compute
 cd shared-compute/infra/demo-provider
 cp .env.example .env
 $EDITOR .env                     # set SC_REGISTRATION_TOKEN

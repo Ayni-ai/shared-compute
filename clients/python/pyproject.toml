@@ -20,8 +20,8 @@ dependencies = []
 
 [project.urls]
 Homepage = "https://ayni-ai.com"
-Repository = "https://github.com/mcastroarroyo/shared-compute"
-Documentation = "https://github.com/mcastroarroyo/shared-compute/blob/main/docs/MCP-SERVER.md"
+Repository = "https://github.com/Ayni-ai/shared-compute"
+Documentation = "https://github.com/Ayni-ai/shared-compute/blob/main/docs/MCP-SERVER.md"
 
 [project.scripts]
 ayni-mcp = "ayni.mcp:main"

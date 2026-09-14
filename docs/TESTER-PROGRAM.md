@@ -28,7 +28,7 @@ Two surfaces, both operated from the console, no third-party accounts needed:
   page and can answer there. API: `POST /v1/feedback`, `GET /v1/me/feedback`,
   `POST /v1/me/feedback/{id}/reply`, `POST /admin/feedback/{id}/reply` (audited).
 - **Public, all testers:** GitHub Discussions on the repo
-  (https://github.com/mcastroarroyo/shared-compute/discussions). Testers already sign in to Ayni with
+  (https://github.com/Ayni-ai/shared-compute/discussions). Testers already sign in to Ayni with
   GitHub, so there is nothing new to join. Welcome thread: Discussions #2 (Announcements).
   Release notes go in Announcements; questions in Q&A; ideas in Ideas.
 
@@ -74,7 +74,7 @@ Where it actually is today: one 0.5B model in production, a handful of devices o
 
 What I need: Android phones (any 8+, Pixel and Samsung ideal) and Mac or Linux boxes. Ten minutes: sign in, one command or a six-letter pairing code, done. A test job reaches new devices within minutes so you can see it work. Feedback goes straight to me, in the app or on GitHub Discussions.
 
-Code, threat model and white paper: github.com/mcastroarroyo/shared-compute · Join: app.ayni-ai.com/testers
+Code, threat model and white paper: github.com/Ayni-ai/shared-compute · Join: app.ayni-ai.com/testers
 
 ### B. r/selfhosted, r/homelab
 
@@ -86,7 +86,7 @@ The provider is one binary (Go coordinator, Rust provider with llama.cpp). Insta
 
 Honest status: one 0.5B model, a handful of devices, test jobs a few times a day. Paid workloads ramp as buyers arrive, so today this is about being part of the community early and shaping it, not income.
 
-Ten minutes to join: app.ayni-ai.com/testers. Code and docs: github.com/mcastroarroyo/shared-compute. I answer every message.
+Ten minutes to join: app.ayni-ai.com/testers. Code and docs: github.com/Ayni-ai/shared-compute. I answer every message.
 
 ### C. r/androidapps
 
@@ -106,7 +106,7 @@ Ayni turns idle consumer devices into a small inference network. A Go coordinato
 
 Status: one 0.5B model in production, a handful of devices, test jobs a few times a day. Larger classes are priced and scheduled but need GPU providers, and paid workloads ramp as buyers arrive. I am looking for early devices (Android, Mac, Linux) and for people to read the threat model and tell me what is wrong with it.
 
-Code: https://github.com/mcastroarroyo/shared-compute · Join: https://app.ayni-ai.com/testers
+Code: https://github.com/Ayni-ai/shared-compute · Join: https://app.ayni-ai.com/testers
 
 ### E. Personal message
 

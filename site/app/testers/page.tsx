@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 };
 
 const APP = "https://app.ayni-ai.com";
-const DISCUSS = "https://github.com/mcastroarroyo/shared-compute/discussions";
+const DISCUSS = "https://github.com/Ayni-ai/shared-compute/discussions";
 
 export default function Testers() {
   return (
@@ -47,6 +47,10 @@ export default function Testers() {
         <li>The Android app is in Google Play internal testing; request access on the testers page with your Google account email.</li>
         <li>Everything is open source (Apache 2.0). Read the code, the threat model and the white paper before you trust a claim.</li>
       </ul>
+      <p>
+        Plain answers to the three questions everyone asks: <a href="/faq/device/">what runs on my device and what it costs me</a>,{" "}
+        <a href="/faq/sealed/">how a job is sealed</a>, and <a href="/faq/earnings/">what I earn and when</a>.
+      </p>
 
       <h2>What we promise</h2>
       <ul style={{ lineHeight: 1.8 }}>

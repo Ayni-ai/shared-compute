@@ -87,7 +87,7 @@ Ten minutes: sign in at [app.ayni-ai.com](https://app.ayni-ai.com), add a device
 6-letter pairing code; Mac/Linux: one command), run one workload, and tell us what confused you.
 Every message gets a reply in the same place. Details and honest status:
 [ayni-ai.com/testers](https://ayni-ai.com/testers/) · community:
-[Discussions](https://github.com/mcastroarroyo/shared-compute/discussions).
+[Discussions](https://github.com/Ayni-ai/shared-compute/discussions).
 
 ## Legal
 

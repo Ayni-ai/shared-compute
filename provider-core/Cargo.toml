@@ -19,7 +19,7 @@ version = "0.1.0"
 edition = "2021"
 rust-version = "1.77"
 license = "LicenseRef-Proprietary-Placeholder"
-repository = "https://github.com/mcastroarroyo/shared-compute"
+repository = "https://github.com/Ayni-ai/shared-compute"
 
 [workspace.dependencies]
 serde = { version = "1", features = ["derive"] }

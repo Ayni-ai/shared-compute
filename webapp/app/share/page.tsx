@@ -4,7 +4,7 @@ import Link from "next/link";
 import { api, API, type Me, type MyDevice } from "../lib/api";
 
 const WS = API.replace(/^http/, "ws") + "/ws/provider";
-const REPO = "https://github.com/mcastroarroyo/shared-compute";
+const REPO = "https://github.com/Ayni-ai/shared-compute";
 const PLAY_TEST_URL = "https://play.google.com/apps/internaltest/4701333072640107331";
 const RELEASES = `${REPO}/releases/tag/provider-latest`;
 

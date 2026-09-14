@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-const REPO = "https://github.com/mcastroarroyo/shared-compute";
+const REPO = "https://github.com/Ayni-ai/shared-compute";
 
 export function Footer() {
   return (

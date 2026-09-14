@@ -5,7 +5,7 @@
 export const COORDINATOR =
   process.env.NEXT_PUBLIC_COORDINATOR_URL || "https://api.ayni-ai.com";
 
-export const REPO = "https://github.com/mcastroarroyo/shared-compute";
+export const REPO = "https://github.com/Ayni-ai/shared-compute";
 export const WHITEPAPER = `${REPO}/blob/main/WHITEPAPER.md`;
 export const LICENSE = `${REPO}/blob/main/LICENSE`;
 

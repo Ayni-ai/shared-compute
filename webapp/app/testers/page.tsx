@@ -6,7 +6,7 @@ import InviteCard from "../invite-card";
 
 const PLAY_TEST_URL = "https://play.google.com/apps/internaltest/4701333072640107331";
 // Community channel: GitHub Discussions on the public repo (testers already sign in with GitHub).
-const CHAT_URL = process.env.NEXT_PUBLIC_TESTER_CHAT_URL || "https://github.com/mcastroarroyo/shared-compute/discussions";
+const CHAT_URL = process.env.NEXT_PUBLIC_TESTER_CHAT_URL || "https://github.com/Ayni-ai/shared-compute/discussions";
 
 export default function Testers() {
   const [me, setMe] = useState<Me | null>(null);
