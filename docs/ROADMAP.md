@@ -56,6 +56,13 @@ From the comparison with NVIDIA's Personal AI Router (`docs/RELATED-WORK.md`):
 - **Overflow bridge** — presenting Ayni as a local node to a PAIR cluster needs a bridge or an
   upstream remote-node feature; not planned until asked for.
 
+## Ayni Mesh (2.0), separate track (2026-09-14)
+
+Evaluation of Colibrì + Lumabri (Apache 2.0, pinned upstream, not forked) as a swarm engine for
+frontier MoE models on community desktops, with Ayni's marketplace layer on top. Lives in
+`Ayni-ai/mesh` with its own GCP project `ayni-mesh`; nothing there changes 1.0. Assessment and
+plan: https://github.com/Ayni-ai/mesh/blob/main/ASSESSMENT.md
+
 ## Milestones
 
 ### M0 — Foundations *(no accounts)*
