@@ -107,6 +107,46 @@ The single number that matters is devices online at the daily peak. If a channel
 sign-ups but not paired devices, the onboarding is the problem; if it produces paired devices
 that leave within a week, the pulse and the earnings page are the problem.
 
+## Closed beta before open launch: gates and week 0 (added 2026-09-14)
+
+Ayni is in production, so the people who join are real users, not test users. What is real
+today decides the shape of the launch: providers can join and earn now; buyers can run
+mechanical workloads (extraction, labelling, normalization) on the 0.5B class now; judgment
+workloads wait for the SMALL class. Supply is a handful of team-operated devices. So the
+first phase is an invite-only closed beta, and the open launch (M2 above) opens on gates.
+
+**Break the chicken-and-egg from both ends.** Seed supply the team controls, disclosed as
+"founding devices are operated by the team". Seed demand the network can serve: five design
+partners with mechanical workloads, $50 of credit each, onboarding through the MCP server, a
+weekly call. Pay providers something that means something: a monthly founding-provider pool
+(target $500) distributed by uptime and tokens served on top of metered earnings.
+
+**Funnel arithmetic for the closed beta.** 50 devices online at night needs about 150 installs
+(a third stay connected), which needs about 1,500 landing-page visits (10% of technical
+visitors install), which is three to four community posts plus forty personal messages. Five
+design partners need about twenty direct conversations.
+
+**Week 0 (now):** confirm the Play review submission; Cloudflare Pages reconnected to the
+transferred repository (done 2026-09-14); rotate the consumer key that once surfaced; get a
+7B model serving on a team Mac so the SMALL class is not empty (blocked on an R2 API token
+for the registry); metrics live on `GET /v1/stats` and the status page, and in the console:
+devices online per hour, jobs per day, dollars charged, dollars paid out, first-run success.
+
+**Weeks 1 to 2:** invite-only codes, personal network and the two friendliest communities,
+target 25 devices and two design partners running. **Weeks 3 to 4:** partners at full volume,
+first founding-pool payout, weekly release notes, every bug answered within a day.
+**Weeks 5 to 6:** decide open beta against the gates. **Week 8:** open beta with Play open
+testing and the Show HN post.
+
+**Gates for open beta.** 50 devices online for 14 consecutive nights, at least 10 attested; a
+SMALL-class model live with measured extraction accuracy on labelled data, published;
+first-run success above 95% for buyers over two weeks; two design partners who would pay list
+price and say so in writing; no open security finding above medium.
+
+**Two rules for the beta.** Beta buyers' data runs on attested phones and team-operated
+devices, stated plainly, until the attested count is meaningful. The judgment class is not
+sold until the mesh track has a real WAN number.
+
 ## What we will not do
 
 Pay for installs, promise income, post from accounts we do not own, post the same text in
