@@ -56,12 +56,21 @@ From the comparison with NVIDIA's Personal AI Router (`docs/RELATED-WORK.md`):
 - **Overflow bridge** — presenting Ayni as a local node to a PAIR cluster needs a bridge or an
   upstream remote-node feature; not planned until asked for.
 
-## Ayni Mesh (2.0), separate track (2026-09-14)
+## Mesh peers: supply for the judgment classes (decided 2026-09-14)
 
-Evaluation of Colibrì + Lumabri (Apache 2.0, pinned upstream, not forked) as a swarm engine for
-frontier MoE models on community desktops, with Ayni's marketplace layer on top. Lives in
-`Ayni-ai/mesh` with its own GCP project `ayni-mesh`; nothing there changes 1.0. Assessment and
-plan: https://github.com/Ayni-ai/mesh/blob/main/ASSESSMENT.md
+Colibrì + Lumabri (Apache 2.0, pinned upstream, not forked) let a swarm of community desktops
+serve frontier MoE models as one model. That is the supply for SMALL and larger classes, sold
+through the same quote → accept → run API. One product, staged merge: the incubator
+`Ayni-ai/mesh` (own GCP project `ayni-mesh`) proves the WAN path and the adapter, then folds in
+here as a provider backend and a scheduler route type. Assessment and plan:
+https://github.com/Ayni-ai/mesh/blob/main/ASSESSMENT.md
+
+**Route classes (new vocabulary, to land with the adapter).** Trust tiers above describe one
+device holding the whole job. A mesh route splits a job across several peers that each see the
+activations for their layer range or expert set (encrypted transport, signed weights, replica
+verification). It is exposed as its own route class, `mesh`, never conflated with the sealed
+single-device route; the per-peer trust tier applies to every peer in the route, and the rate
+card prices the class.
 
 ## Milestones
 
