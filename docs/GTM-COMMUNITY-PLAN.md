@@ -128,8 +128,8 @@ design partners need about twenty direct conversations.
 
 **Week 0 (now):** confirm the Play review submission; Cloudflare Pages reconnected to the
 transferred repository (done 2026-09-14); rotate the consumer key that once surfaced; get a
-7B model serving on a team Mac so the SMALL class is not empty (blocked on an R2 API token
-for the registry); metrics live on `GET /v1/stats` and the status page, and in the console:
+7B model serving on a team Mac so the SMALL class is not empty (measured 2026-09-14: 22 tok/s,
+recall 100% / precision 75% on the labelled lines; registry push blocked on an R2 API token); metrics live on `GET /v1/stats` and the status page, and in the console:
 devices online per hour, jobs per day, dollars charged, dollars paid out, first-run success.
 
 **Weeks 1 to 2:** invite-only codes, personal network and the two friendliest communities,

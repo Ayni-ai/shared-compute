@@ -220,6 +220,11 @@ gave, how many lines it flagged, and one of these verdicts:
 | not fit: one answer for every line | not classification at all |
 | not fit: precision too low | most alerts would be noise |
 
+Measured on 2026-09-14 with a 7B model (Qwen2.5-7B-Instruct, the SMALL class) on a team Mac:
+recall 100%, precision 75% at LOW and 86% at HIGH, three distinct answers; the only misses
+over-flag availability lines. That class is staged for the registry and will be selectable
+with `model` once published.
+
 Measured on the production model on 2026-09-07: two distinct answers (LOW, MEDIUM) across
 the twelve lines, every line flagged at LOW. Use it as a volume filter or wait for larger
 model classes; the tool will report the improvement when supply arrives. Bring your own
