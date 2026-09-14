@@ -119,6 +119,19 @@ Hi <name>, I built Ayni, an open-source network that runs small AI jobs on idle 
 - **Every new device gets a job within minutes:** `scripts/tester-pulse.py` runs every ten minutes from launchd on the founders' Mac (`~/Library/LaunchAgents/com.ayni.tester-pulse.plist`), sends a three-to-twelve item job whenever a device appears or returns, and caps spend at $0.50 a day. Log: `~/.ayni/pulse/pulse.jsonl`; `python3 scripts/tester-pulse.py --status`.
 - **Funnel numbers:** `GET /admin/overview` → `users.total`, `users.with_devices`, `providers.known`, `providers.online`. Baseline 2026-09-10: 3 users, 2 with devices, 10 known devices, 1 online.
 
+### F. Design partner offer (buyers, personal message)
+
+Hi <name>, I am looking for five design partners for Ayni's closed beta and your <workload>
+is exactly the shape it serves today: independent items, batchable, tolerant of seconds of
+latency. What you get: $50 of credit, onboarding through an MCP server so your analyst can
+quote, cap the spend, run and collect without writing code, a weekly call with me, and the
+measured numbers before you trust anything: the self-test scores the model on your labelled
+lines before a cent is spent. What I ask: one real export, honest feedback, and, if it works,
+a sentence I can quote. Honest limits: the live model is small, so start with extraction and
+labelling, not judgment; your data runs on attested phones and devices the team operates
+until the fleet is larger. Prices are per million tokens, about $0.03 on the micro class.
+Ten minutes on a call this week? app.ayni-ai.com has the steps.
+
 ## Welcome message for the channel
 
 Welcome to the Ayni tester channel. Three things:
