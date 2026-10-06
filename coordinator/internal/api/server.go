@@ -41,6 +41,7 @@ type Server struct {
 	rl        *ratelimit.Limiter
 	intakeRL  *ratelimit.Limiter
 	demoRL    *ratelimit.Limiter
+	memberRL  *ratelimit.Limiter // founding-member badge and share-page lookups (cache misses only)
 	demo      *demoState
 	log       *slog.Logger
 	hub       *wshub.Hub
@@ -109,6 +110,7 @@ func NewServer(cfg config.Config, reg *registry.Registry, job *jobs.Manager, st 
 		rl:        ratelimit.New(cfg.RatePerMin),
 		intakeRL:  ratelimit.New(6), // public site forms: 6/min per IP
 		demoRL:    ratelimit.New(3), // investor demo: 3 runs/min per IP
+		memberRL:  ratelimit.New(120),
 		demo:      &demoState{},
 		log:       log,
 		hub:       hub,
@@ -171,6 +173,12 @@ func (s *Server) Handler() http.Handler {
 	mux.Handle("POST /v1/me/referral/claim", instrument("my_referral_claim", http.HandlerFunc(s.handleClaimReferral)))
 	mux.Handle("POST /v1/me/profile", instrument("my_profile", http.HandlerFunc(s.handleMyProfile)))
 	mux.Handle("GET /v1/leaderboard", instrument("v1_leaderboard", http.HandlerFunc(s.handleLeaderboard)))
+	mux.Handle("GET /v1/me/founding", instrument("my_founding", http.HandlerFunc(s.handleMyFounding)))
+	mux.Handle("POST /v1/me/founding/enroll", instrument("my_founding_enroll", http.HandlerFunc(s.handleFoundingEnroll)))
+	mux.Handle("GET /v1/founding", instrument("v1_founding", http.HandlerFunc(s.handleFoundingPublic)))
+	mux.Handle("GET /v1/members/{code}", instrument("v1_member", http.HandlerFunc(s.handleMember)))
+	mux.Handle("GET /v1/members/{code}/badge.svg", instrument("v1_member_badge", http.HandlerFunc(s.handleMemberBadge)))
+	mux.Handle("GET /m/{code}", instrument("member_share", http.HandlerFunc(s.handleMemberShare)))
 	mux.Handle("POST /v1/feedback", instrument("feedback", http.HandlerFunc(s.handleFeedback)))
 	mux.Handle("GET /v1/me/feedback", instrument("my_feedback", http.HandlerFunc(s.handleMyFeedback)))
 	mux.Handle("POST /v1/me/feedback/{id}/reply", instrument("my_feedback_reply", http.HandlerFunc(s.handleMyFeedbackReply)))

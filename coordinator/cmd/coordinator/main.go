@@ -76,6 +76,8 @@ func main() {
 	reg := registry.New()
 	job := jobs.New()
 	srv := api.NewServer(cfg, reg, job, st, cat, log)
+	// Five-minute fleet sampler + founding-member validation (no-op without accounts).
+	go srv.RunFoundingLoop(ctx)
 
 	httpSrv := &http.Server{
 		Addr:              cfg.HTTPAddr,

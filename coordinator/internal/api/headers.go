@@ -3,8 +3,9 @@ package api
 import "net/http"
 
 // secureHeaders sets baseline browser-facing security headers on every response.
-// The API serves JSON (and one shell script), never HTML, so the CSP is the
-// strictest possible: nothing may load. HSTS is 1 year + preload-eligible.
+// The API serves JSON, one shell script, SVG badges and one link-preview page
+// (/m/{code}, no scripts or subresources), so the CSP is the strictest possible:
+// nothing may load. HSTS is 1 year + preload-eligible.
 func secureHeaders(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		h := w.Header()
