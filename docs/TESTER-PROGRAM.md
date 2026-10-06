@@ -1,5 +1,8 @@
 # Ayni tester program
 
+Testers who stay a month become founding members: see [FOUNDING-MEMBERS.md](FOUNDING-MEMBERS.md)
+for the offer, the validation rules, the founding-framed drafts (F1 to F11) and the weekly loop.
+
 How we find testers, bring them in, talk to them in one place, and turn what they say into
 releases. Everything here is operated from the console's **Feedback** page plus one chat channel.
 

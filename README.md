@@ -80,7 +80,12 @@ make e2e        # end-to-end encrypted round-trip test
 
 See [`docs/DEVELOPMENT.md`](docs/DEVELOPMENT.md) for toolchain setup.
 
-## Testers wanted
+## Testers wanted: founding members
+
+We are recruiting Ayni's first 1,000 **founding members**: a month of test jobs on a device you
+are not using, one honest piece of feedback, and a numbered badge the network itself verifies.
+Live progress and the deal: [ayni-ai.com/founding](https://ayni-ai.com/founding/) · plan:
+[`docs/FOUNDING-MEMBERS.md`](docs/FOUNDING-MEMBERS.md).
 
 Ayni is in early testing and needs people with an Android phone, a Mac or a Linux box.
 Ten minutes: sign in at [app.ayni-ai.com](https://app.ayni-ai.com), add a device (phone: a

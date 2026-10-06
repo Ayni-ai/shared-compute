@@ -1,5 +1,9 @@
 # Community go-to-market plan: 1,000 devices online
 
+> **2026-10-06:** the near-term goal is now [FOUNDING-MEMBERS.md](FOUNDING-MEMBERS.md): 1,000
+> validated founding members and 100 devices online at any time (7-day floor), measured live.
+> This document stays the long-range plan for 1,000 online at once.
+
 Written 2026-09-11. Goal: 1,000 devices online at the same time, idle and serving. Baseline
 today: 3 users, 10 devices ever benchmarked, 1 online.
 
