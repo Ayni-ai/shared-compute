@@ -10,7 +10,8 @@ const links: [string, string, boolean][] = [
   ["/rent/", "Run a workload", true],
   ["/technology/", "Technology", true],
   ["/security/", "Security", true],
-  ["/testers/", "Testers", false],
+  ["/founding/", "Founding members", false],
+  ["/testers/", "Testers", true],
   ["/status/", "Status", false],
 ];
 

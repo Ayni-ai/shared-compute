@@ -23,7 +23,7 @@ export default function Status() {
         <li><strong>Jobs in the last 24 h</strong>: inference requests served, including the small test jobs every new device receives.</li>
       </ul>
       <p>
-        Want your device in the count? <a href="https://app.ayni-ai.com/testers/">Ten minutes on the testers page.</a>
+        Want your device in the count? <a href="/founding/">Become a founding member</a>: ten minutes to join, a month of test jobs.
       </p>
     </section>
   );

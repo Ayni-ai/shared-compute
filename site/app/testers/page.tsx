@@ -28,6 +28,11 @@ export default function Testers() {
 
       <FleetCounter />
 
+      <p className="card" style={{ padding: "14px 18px" }}>
+        Stay for a month and you become a founding member: one of the first 1,000, with a numbered badge the network itself
+        verifies. <a href="/founding/">How it works</a>.
+      </p>
+
       <h2>What you will do</h2>
       <ol style={{ lineHeight: 1.8 }}>
         <li>Sign in at <a href={APP}>app.ayni-ai.com</a> with GitHub or Google. No password, no card.</li>
