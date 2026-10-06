@@ -95,6 +95,14 @@ export default function Testers() {
         </div>
       </div>
 
+      <div className="card" style={{ marginBottom: 18, borderColor: "#1f9e94", background: "#f0faf8" }}>
+        <h3>Founding members</h3>
+        <p className="muted" style={{ fontSize: ".9rem" }}>
+          Testing for a month makes you one: a device that served a job, a day online in total, and one piece of feedback sent from this
+          page. The first 1,000 get a numbered badge anyone can verify. <Link href="/founding/">Start your test month</Link>.
+        </p>
+      </div>
+
       {me && <InviteCard />}
 
       {CHAT_URL && (

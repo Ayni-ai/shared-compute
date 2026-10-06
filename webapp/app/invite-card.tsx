@@ -79,7 +79,7 @@ export default function InviteCard() {
         {r.referred_devices === 1 ? "device" : "devices"}. <Link href="/founders/">See the founders board.</Link>
       </p>
       <details style={{ marginTop: 12 }}>
-        <summary className="muted" style={{ cursor: "pointer", fontSize: ".9rem" }}>Appear on the public founders board (optional)</summary>
+        <summary className="muted" style={{ cursor: "pointer", fontSize: ".9rem" }}>Show my name on the founders board and my founding badge (optional)</summary>
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center", marginTop: 10 }}>
           <input className="input" placeholder="Display name (as shown publicly)" value={name} maxLength={40}
             onChange={(e) => setName(e.target.value)} style={{ flex: 1, minWidth: 200 }} />

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { api, type Me } from "../lib/api";
 import InviteCard from "../invite-card";
+import FoundingBanner from "../founding-banner";
 
 export default function Dashboard() {
   const [me, setMe] = useState<Me | null>(null);
@@ -49,6 +50,7 @@ export default function Dashboard() {
         </button>
       </p>
 
+      <FoundingBanner />
       <InviteCard />
 
       <div className="grid c3">

@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { api, type Leaderboard } from "../lib/api";
+import FoundingProgressCard from "../founding-progress";
 
 export default function Founders() {
   const [lb, setLb] = useState<Leaderboard | null>(null);
@@ -17,12 +18,14 @@ export default function Founders() {
   return (
     <>
       <Link href="/testers/" className="muted">← Testers</Link>
-      <h1 style={{ marginTop: 12 }}>Founding devices</h1>
+      <h1 style={{ marginTop: 12 }}>Founders</h1>
       <p className="muted" style={{ margin: "6px 0 18px" }}>
-        The first {lb ? lb.founding_cap.toLocaleString() : "1,000"} devices to join Ayni are founding devices, permanently.
-        {lb && <> So far <strong>{lb.founding_devices}</strong> of {lb.founding_cap.toLocaleString()} have joined.</>}{" "}
+        The first 1,000 people who give Ayni a test month (a device online, test jobs instead of paid work, and honest feedback) become
+        numbered <Link href="/founding/">founding members</Link>. The first {lb ? lb.founding_cap.toLocaleString() : "1,000"} devices are founding
+        devices{lb && <>; <strong>{lb.founding_devices}</strong> have joined so far</>}.{" "}
         People who invite others appear here only if they chose to, under a name they picked.
       </p>
+      <FoundingProgressCard />
       <section className="card">
         <h3>Board</h3>
         {err && <p className="err">{err}</p>}
@@ -45,7 +48,7 @@ export default function Founders() {
         )}
       </section>
       <p className="muted" style={{ marginTop: 14, fontSize: ".9rem" }}>
-        Want in? <Link href="/testers/">Ten minutes on the testers page</Link>, then share your invite link.
+        Want in? <Link href="/founding/">Start your test month</Link>, then share your invite link.
       </p>
     </>
   );
