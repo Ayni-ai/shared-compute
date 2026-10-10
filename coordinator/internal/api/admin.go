@@ -29,6 +29,7 @@ func (s *Server) mountAdmin(mux *http.ServeMux) {
 	// IT-admin console (admin_console.go).
 	mux.Handle("GET /admin/overview", s.withAdmin(s.adminOverview))
 	mux.Handle("GET /admin/users", s.withAdmin(s.adminUsers))
+	mux.Handle("GET /admin/founding", s.withAdmin(s.adminFounding))
 	mux.Handle("GET /admin/events", s.withAdmin(s.adminEvents))
 	mux.Handle("GET /admin/intake", s.withAdmin(s.adminGetIntake))
 	mux.Handle("POST /admin/intake", s.withAdmin(s.adminSetIntake))

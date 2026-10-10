@@ -70,6 +70,9 @@ type Config struct {
 	AppURL string
 	// CookieDomain scopes the session cookie across api./app. subdomains.
 	CookieDomain string
+	// FoundingMinOnlineHours is how long a founding member's devices must have been
+	// connected, in total, before the member is validated (docs/FOUNDING-MEMBERS.md).
+	FoundingMinOnlineHours int
 
 	// --- workload manifest signing (security v0.1) ---
 	// ManifestSigningKey is a base64 32-byte Ed25519 seed. When set, the
@@ -144,6 +147,7 @@ func Load() (Config, error) {
 		AuthCallbackBase:           strings.TrimRight(getenv("SC_AUTH_CALLBACK_BASE", "https://api.ayni-ai.com"), "/"),
 		AppURL:                     strings.TrimRight(getenv("SC_APP_URL", "https://app.ayni-ai.com"), "/"),
 		CookieDomain:               getenv("SC_COOKIE_DOMAIN", ".ayni-ai.com"),
+		FoundingMinOnlineHours:     getenvInt("SC_FOUNDING_MIN_ONLINE_HOURS", 24),
 		DemoEnabled:                getenv("SC_DEMO_ENABLED", "") == "1",
 		ConnectDemoEnabled:         getenv("SC_CONNECT_DEMO_ENABLED", "") == "1",
 		CouncilModelAPI:            getenv("SC_COUNCIL_MODEL_API", ""),

@@ -43,6 +43,45 @@ export type Leaderboard = {
   founding_cap: number;
 };
 
+// Founding members: the test-month program (docs/FOUNDING-MEMBERS.md).
+export type Founding = {
+  enrolled: boolean;
+  validated: boolean;
+  number: number;
+  enrolled_at: string | null;
+  validated_at: string | null;
+  test_month_ends?: string;
+  devices: number;
+  jobs_served: number;
+  online_minutes: number;
+  feedback: number;
+  min_online_hours: number;
+  members: number;
+  cap: number;
+  open: boolean;
+  code: string;
+  join_link: string;
+  member_page: string;
+  share_url: string;
+  badge_url: string;
+  card_url: string;
+};
+
+export type FoundingProgress = {
+  members: number;
+  enrolled: number;
+  cap: number;
+  online_now: number;
+  online_target: number;
+  online_floor_7d: number;
+  online_median_7d: number;
+  online_peak_7d: number;
+  covered_hours: number;
+  min_online_hours: number;
+};
+
+export type Member = { number: number; name: string; cap: number; validated_at: string };
+
 export type Me = {
   user: { id: string; email: string; name: string; avatar_url: string };
   api_key_id: string;
@@ -61,6 +100,12 @@ export const api = {
   setProfile: (p: { display_name: string; leaderboard_opt_in: boolean }): Promise<{ ok: boolean }> =>
     req("/v1/me/profile", { method: "POST", body: JSON.stringify(p) }),
   leaderboard: (): Promise<Leaderboard> => req("/v1/leaderboard"),
+
+  founding: (): Promise<Founding> => req("/v1/me/founding"),
+  enrollFounding: (): Promise<Founding> =>
+    req("/v1/me/founding/enroll", { method: "POST", body: JSON.stringify({ accept: true }) }),
+  foundingProgress: (): Promise<FoundingProgress> => req("/v1/founding"),
+  member: (code: string): Promise<Member> => req(`/v1/members/${encodeURIComponent(code)}`),
   logout: () => req("/auth/logout", { method: "POST" }),
 
   quoteWorkload: (input: {
