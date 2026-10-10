@@ -1,0 +1,8 @@
+# Reviewed gitleaks false positives, by fingerprint (commit:file:rule:line).
+# Add an entry only after reading the match and saying here why it is not a secret.
+
+# WHITEPAPER.md: prose ("X25519 key agreement"), not a credential.
+837b9afbec30062ddb6746359df017445b65e222:WHITEPAPER.md:generic-api-key:122
+# Android key-attestation test fixture: public X.509 certificates from a Pixel 9 Pro Fold;
+# the match is the label "kind": "android_key". Used by coordinator/internal/attest/android_test.go.
+fe1858e4c3de1c97b41246bf6af87be38d44d9bc:coordinator/internal/attest/testdata/pixel9pf_chain.json:generic-api-key:2

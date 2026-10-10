@@ -122,12 +122,11 @@ fn reconnects_after_coordinator_disconnect() {
         .expect("start");
 
     assert!(
-        wait_until(Duration::from_secs(20), || rec
+        wait_until(Duration::from_secs(20), || !rec
             .registered
             .lock()
             .unwrap()
-            .len()
-            >= 1),
+            .is_empty()),
         "never registered the first time: {:?}",
         rec.other.lock().unwrap()
     );
