@@ -48,12 +48,18 @@ jobs:
       # it must not block unrelated work.
       - run: python3 scripts/check-llama-cpp-cves.py ${{ github.event_name == 'schedule' && '--strict' || '' }}
   gitleaks:
+    # The gitleaks CLI (MIT), not gitleaks-action: the action needs a licence key for
+    # organisation repositories. Pinned by version and verified by the Go checksum
+    # database. Scans the whole history reachable from HEAD; reviewed false positives
+    # are listed by fingerprint in .gitleaksignore.
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with: { fetch-depth: 0 }
-      - uses: gitleaks/gitleaks-action@v2
-        env: { GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}" }
+      - uses: actions/setup-go@v5
+        with: { go-version: "1.27", cache: false }
+      - run: go install github.com/zricethezav/gitleaks/v8@v8.30.1
+      - run: gitleaks git --redact --verbose --no-banner .
   python-audit:
     runs-on: ubuntu-latest
     defaults: { run: { working-directory: security } }
