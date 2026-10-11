@@ -190,6 +190,9 @@ type Store interface {
 	// Migrate applies any pending schema migrations. No-op for the memory store.
 	Migrate(ctx context.Context) error
 
+	// Ping reports whether the backing database answers. Always nil for the memory store.
+	Ping(ctx context.Context) error
+
 	// ValidateConsumerKey returns a stable key id if the key is accepted.
 	ValidateConsumerKey(ctx context.Context, key string) (keyID string, ok bool)
 

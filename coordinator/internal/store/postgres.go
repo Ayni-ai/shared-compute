@@ -62,6 +62,14 @@ func sha(b string) []byte {
 // on its own catalog rather than anything migration-specific.
 const migrationLockKey = 84719205
 
+// Ping checks that the database answers on the pool.
+func (p *PG) Ping(ctx context.Context) error {
+	if err := p.pool.Ping(ctx); err != nil {
+		return fmt.Errorf("store ping: %w", err)
+	}
+	return nil
+}
+
 func (p *PG) Migrate(ctx context.Context) error {
 	conn, err := p.pool.Acquire(ctx)
 	if err != nil {

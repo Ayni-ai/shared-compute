@@ -43,5 +43,5 @@ temporary public IP that is removed right after. See `infra/gcp/migrate-db.sh`.
 4. Scale Fly to zero after 24 h clean; destroy after the first weekly backup lands.
 
 ## Observability
-Uptime check on `/health` with an alert policy; Cloud Run request/latency/5xx dashboard;
+Uptime check on `/health` with an alert policy (`/health` and `/healthz` answer 503 with `"db":"down"` when Cloud SQL is unreachable; `/livez` is process liveness only and never checks the database); Cloud Run request/latency/5xx dashboard;
 Data Access audit logs enabled for Secret Manager + KMS + Cloud SQL.

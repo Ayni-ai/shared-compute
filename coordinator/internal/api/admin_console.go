@@ -86,10 +86,17 @@ type nodeFacts struct {
 }
 
 func (s *Server) nodeFactsByPK(r *http.Request) map[string]nodeFacts {
+	out, _ := s.nodeFacts(r)
+	return out
+}
+
+// nodeFacts is nodeFactsByPK with the store error surfaced, for callers that must not
+// mistake an unreachable database for an empty fleet.
+func (s *Server) nodeFacts(r *http.Request) (map[string]nodeFacts, error) {
 	out := map[string]nodeFacts{}
 	caps, err := s.store.NodeCapabilities(r.Context())
 	if err != nil {
-		return out
+		return out, err
 	}
 	for _, c := range caps {
 		fp := capability.Fingerprint{
@@ -105,7 +112,7 @@ func (s *Server) nodeFactsByPK(r *http.Request) map[string]nodeFacts {
 			Model: c.Model, UpdatedAt: c.UpdatedAt,
 		}
 	}
-	return out
+	return out, nil
 }
 
 func (s *Server) ownersByPK(r *http.Request) map[string]auth.User {
@@ -283,8 +290,20 @@ func (s *Server) adminOverview(w http.ResponseWriter, r *http.Request) {
 		c.DecodeTPS = math.Round(c.DecodeTPS*10) / 10
 	}
 
+	// Any database read that fails is named in "errors" and the response carries
+	// "degraded": true, so a zero below is never mistaken for real data.
+	var failed []string
+	fail := func(what string, err error) {
+		failed = append(failed, what)
+		s.log.Warn("admin overview read failed", "read", what, "err", err)
+	}
+
 	// Known fleet = every node that ever benchmarked, online or not.
-	known := len(s.nodeFactsByPK(r))
+	facts, err := s.nodeFacts(r)
+	if err != nil {
+		fail("node_capabilities", err)
+	}
+	known := len(facts)
 
 	// Accounts.
 	usersTotal, usersWithDevices := 0, 0
@@ -296,6 +315,8 @@ func (s *Server) adminOverview(w http.ResponseWriter, r *http.Request) {
 					usersWithDevices++
 				}
 			}
+		} else {
+			fail("users", err)
 		}
 	}
 
@@ -307,6 +328,8 @@ func (s *Server) adminOverview(w http.ResponseWriter, r *http.Request) {
 			ptok += u.PromptTokens
 			ctok += u.CompletionTokens
 		}
+	} else {
+		fail("usage_24h", err)
 	}
 	// Ledger in the last 7d.
 	var gross, prov int64
@@ -317,10 +340,17 @@ func (s *Server) adminOverview(w http.ResponseWriter, r *http.Request) {
 			prov += e.ProviderMicros
 			jobs7 += e.Jobs
 		}
+	} else {
+		fail("earnings_7d", err)
 	}
 	waitlist := 0
 	if rows, err := s.store.WaitlistSince(r.Context(), time.Now().Add(-10*365*24*time.Hour)); err == nil {
 		waitlist = len(rows)
+	} else {
+		fail("waitlist", err)
+	}
+	if failed == nil {
+		failed = []string{}
 	}
 	warns, errs, lastErr := events.Default.Counts(time.Hour)
 	paused, msg := s.intakePaused()
@@ -330,6 +360,8 @@ func (s *Server) adminOverview(w http.ResponseWriter, r *http.Request) {
 
 	writeJSON(w, http.StatusOK, map[string]any{
 		"generated_at": time.Now().UTC().Format(time.RFC3339),
+		"degraded":     len(failed) > 0,
+		"errors":       failed,
 		"coordinator": map[string]any{
 			"uptime_s":  int(time.Since(startedAt).Seconds()),
 			"revision":  buildRevision(),
