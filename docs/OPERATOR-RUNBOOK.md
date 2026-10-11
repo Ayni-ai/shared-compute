@@ -40,7 +40,7 @@ Actions secrets).
    echo "SAVE THESE:  consumer=$CONSUMER_KEY  provider=$PROVIDER_TOKEN"
    ```
 6. `fly deploy`
-7. `curl https://<app>.fly.dev/healthz` → `{"status":"ok","providers":0}`
+7. `curl https://<app>.fly.dev/healthz` → `{"db":"ok","providers":0,"status":"ok"}` (503 with `"db":"down"` if the database is unreachable)
 
 ### 3. Cloudflare + domain
 

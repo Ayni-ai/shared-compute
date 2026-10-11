@@ -19,6 +19,7 @@ import argparse
 import json
 import os
 import sys
+import urllib.error
 import urllib.request
 from datetime import datetime, timezone
 
@@ -50,8 +51,13 @@ def fetch() -> dict:
     if not token:
         sys.exit("SC_ADMIN_TOKEN is not set (put it in .env.local)")
     req = urllib.request.Request(API + "/admin/founding", headers={"Authorization": "Bearer " + token})
-    with urllib.request.urlopen(req, timeout=30) as r:
-        return json.loads(r.read())
+    try:
+        with urllib.request.urlopen(req, timeout=30) as r:
+            return json.loads(r.read())
+    except urllib.error.HTTPError as e:
+        if e.code == 503:
+            sys.exit("the coordinator cannot reach its database right now (503); nothing recorded, try again later")
+        raise
 
 
 def pct(a: int, b: int) -> str:
@@ -178,6 +184,12 @@ def main() -> None:
     if args.row:
         print(row(d))
         return
+    if d.get("degraded"):
+        failed = ", ".join(d.get("errors") or []) or "unknown"
+        print(f"WARNING: the coordinator could not read part of its database ({failed}).")
+        if d.get("funnel") is None or args.record:
+            sys.exit("Report skipped and nothing recorded: try again once /health answers 200.")
+        print("The numbers below are incomplete.\n")
     print(report(d, history))
     if args.record and d.get("funnel") is not None:
         os.makedirs(os.path.dirname(HISTORY), exist_ok=True)

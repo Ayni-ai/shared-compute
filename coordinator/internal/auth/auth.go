@@ -95,6 +95,14 @@ func New(ctx context.Context, dbURL string, cfg Config, main store.Store, log *s
 	}, nil
 }
 
+// Ping checks that the accounts database answers on this package's pool.
+func (a *Auth) Ping(ctx context.Context) error {
+	if err := a.pool.Ping(ctx); err != nil {
+		return fmt.Errorf("auth ping: %w", err)
+	}
+	return nil
+}
+
 func (a *Auth) Close() {
 	if a != nil && a.pool != nil {
 		a.pool.Close()

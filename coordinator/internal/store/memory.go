@@ -73,6 +73,9 @@ func keyID(k string) string {
 
 func (m *Mem) Migrate(context.Context) error { return nil }
 
+// Ping always succeeds: there is no database behind the memory store.
+func (m *Mem) Ping(context.Context) error { return nil }
+
 func (m *Mem) ValidateConsumerKey(_ context.Context, key string) (string, bool) {
 	m.mu.Lock()
 	defer m.mu.Unlock()

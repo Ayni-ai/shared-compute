@@ -61,16 +61,29 @@ func (s *Server) handlePublicStats(w http.ResponseWriter, r *http.Request) {
 	}
 	out.ACUOnline = capability.Round2(out.ACUOnline)
 	out.DecodeTPS = float64(int(out.DecodeTPS*10)) / 10
-	out.DevicesKnown = len(s.nodeFactsByPK(r))
-	if rows, err := s.store.UsageSince(r.Context(), time.Now().Add(-24*time.Hour)); err == nil {
-		for _, u := range rows {
-			out.Jobs24h += int64(u.Requests)
-		}
+	// The database-backed numbers are all or nothing: if any read fails, answer 503
+	// and keep the cache as it was, rather than publishing zeros that look real.
+	facts, err := s.nodeFacts(r)
+	if err != nil {
+		s.publicStatsUnavailable(w, "node_capabilities", err)
+		return
 	}
-	if rows, err := s.store.EarningsSince(r.Context(), time.Now().Add(-7*24*time.Hour)); err == nil {
-		for _, e := range rows {
-			out.Jobs7d += e.Jobs
-		}
+	out.DevicesKnown = len(facts)
+	usage, err := s.store.UsageSince(r.Context(), time.Now().Add(-24*time.Hour))
+	if err != nil {
+		s.publicStatsUnavailable(w, "usage_24h", err)
+		return
+	}
+	for _, u := range usage {
+		out.Jobs24h += int64(u.Requests)
+	}
+	earnings, err := s.store.EarningsSince(r.Context(), time.Now().Add(-7*24*time.Hour))
+	if err != nil {
+		s.publicStatsUnavailable(w, "earnings_7d", err)
+		return
+	}
+	for _, e := range earnings {
+		out.Jobs7d += e.Jobs
 	}
 	for m := range models {
 		out.Models = append(out.Models, m)
@@ -84,4 +97,11 @@ func (s *Server) handlePublicStats(w http.ResponseWriter, r *http.Request) {
 	publicStatsCache.body = out
 	w.Header().Set("Cache-Control", "public, max-age=30")
 	writeJSON(w, http.StatusOK, out)
+}
+
+func (s *Server) publicStatsUnavailable(w http.ResponseWriter, read string, err error) {
+	if s.log != nil {
+		s.log.Warn("public stats read failed", "read", read, "err", err)
+	}
+	writeDBUnavailable(w)
 }

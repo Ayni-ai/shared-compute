@@ -53,6 +53,7 @@ type Server struct {
 	council   []council.Reviewer
 	councilDB *councilStore // nil unless SC_DATABASE_URL is set; persists the Council ledger
 	intake    intakeState   // operator maintenance switch (admin_console.go)
+	db        dbProbe       // cached database reachability for /health (health.go)
 }
 
 func NewServer(cfg config.Config, reg *registry.Registry, job *jobs.Manager, st store.Store, cat *catalog.Catalog, log *slog.Logger) *Server {
@@ -138,7 +139,9 @@ func (s *Server) Handler() http.Handler {
 	// Cloud Run's front end intercepts the exact path /healthz; these aliases are
 	// what the load balancer and uptime checks use there.
 	mux.Handle("GET /health", instrument("healthz", http.HandlerFunc(s.handleHealth)))
-	mux.Handle("GET /livez", instrument("healthz", http.HandlerFunc(s.handleHealth)))
+	// /livez is process liveness only: it never touches the database, so a database
+	// outage reports through /health and /healthz without restarting the instance.
+	mux.Handle("GET /livez", instrument("livez", http.HandlerFunc(s.handleLive)))
 	// Prometheus metrics carry route names, provider counts and latency
 	// histograms: operational detail, not public data. Behind the admin token
 	// when one is configured (production); open only in local/dev setups.

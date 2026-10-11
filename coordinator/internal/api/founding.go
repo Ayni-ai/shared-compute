@@ -212,13 +212,23 @@ func (s *Server) handleFoundingPublic(w http.ResponseWriter, r *http.Request) {
 		"generated_at":     time.Now().UTC().Format(time.RFC3339),
 	}
 	if s.auth != nil {
-		if v, e, err := s.auth.FoundingCounts(r.Context()); err == nil {
-			body["members"], body["enrolled"] = v, e
+		// Counts come from the database; if it does not answer, say so (503, not
+		// cached) instead of publishing zero members and a zero floor.
+		v, e, err := s.auth.FoundingCounts(r.Context())
+		if err != nil {
+			s.log.Warn("founding counts failed", "err", err)
+			writeDBUnavailable(w)
+			return
 		}
-		if fw, err := s.auth.FleetSince(r.Context(), time.Now().Add(-7*24*time.Hour)); err == nil {
-			body["online_floor_7d"], body["online_median_7d"], body["online_peak_7d"] = fw.Floor, fw.Median, fw.Peak
-			body["covered_hours"] = fw.CoveredHrs
+		body["members"], body["enrolled"] = v, e
+		fw, err := s.auth.FleetSince(r.Context(), time.Now().Add(-7*24*time.Hour))
+		if err != nil {
+			s.log.Warn("founding fleet window failed", "err", err)
+			writeDBUnavailable(w)
+			return
 		}
+		body["online_floor_7d"], body["online_median_7d"], body["online_peak_7d"] = fw.Floor, fw.Median, fw.Peak
+		body["covered_hours"] = fw.CoveredHrs
 	}
 	foundingPublicCache.at, foundingPublicCache.body = time.Now(), body
 	w.Header().Set("Cache-Control", "public, max-age=30")
@@ -471,15 +481,26 @@ func (s *Server) adminFounding(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	ctx := r.Context()
+	// A read that fails is named in "errors" with "degraded": true; the weekly report
+	// refuses to record a degraded snapshot (scripts/founding-report.py).
+	failed := []string{}
 	if f, err := s.auth.FoundingFunnelCounts(ctx, rules); err == nil {
 		out["funnel"] = f
 	} else {
+		failed = append(failed, "funnel")
 		s.log.Warn("founding funnel failed", "err", err)
 	}
-	for key, d := range map[string]time.Duration{"fleet_24h": 24 * time.Hour, "fleet_7d": 7 * 24 * time.Hour} {
-		if fw, err := s.auth.FleetSince(ctx, time.Now().Add(-d)); err == nil {
-			out[key] = fw
+	for _, k := range []struct {
+		key string
+		d   time.Duration
+	}{{"fleet_24h", 24 * time.Hour}, {"fleet_7d", 7 * 24 * time.Hour}} {
+		if fw, err := s.auth.FleetSince(ctx, time.Now().Add(-k.d)); err == nil {
+			out[k.key] = fw
+		} else {
+			failed = append(failed, k.key)
+			s.log.Warn("founding fleet window failed", "window", k.key, "err", err)
 		}
 	}
+	out["degraded"], out["errors"] = len(failed) > 0, failed
 	writeJSON(w, http.StatusOK, out)
 }
