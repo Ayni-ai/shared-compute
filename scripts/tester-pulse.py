@@ -20,6 +20,7 @@ import os
 import sys
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
 from datetime import datetime, timezone
 
@@ -34,6 +35,9 @@ LOG = os.path.join(STATE_DIR, "pulse.jsonl")
 DAILY_CAP_USD = float(os.environ.get("PULSE_DAILY_CAP_USD", "0.50"))
 MAX_PRICE_PER_JOB = 0.05
 QUIET_MINUTES = 20            # do not re-pulse the same device within this window
+# In Cloud Run (infra/gcp/pulse) state lives in a GCS object and the log goes to stdout
+# (Cloud Logging); on a workstation it stays under ~/.ayni/pulse.
+STATE_GCS = os.environ.get("PULSE_STATE_GCS", "")  # gs://bucket/path/state.json
 
 PROMPTS = [
     "Reply with one word: hello.",
@@ -64,15 +68,49 @@ def admin_get(path: str) -> dict:
         return json.loads(r.read())
 
 
+def _gcs_token() -> str:
+    req = urllib.request.Request(
+        "http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token",
+        headers={"Metadata-Flavor": "Google"})
+    with urllib.request.urlopen(req, timeout=10) as r:
+        return json.loads(r.read())["access_token"]
+
+
+def _gcs_parts() -> tuple[str, str]:
+    bucket, _, obj = STATE_GCS.removeprefix("gs://").partition("/")
+    return bucket, urllib.parse.quote(obj, safe="")
+
+
 def load_state() -> dict:
+    empty = {"seen": {}, "spend": {}}
+    if STATE_GCS:
+        bucket, obj = _gcs_parts()
+        req = urllib.request.Request(
+            f"https://storage.googleapis.com/storage/v1/b/{bucket}/o/{obj}?alt=media",
+            headers={"Authorization": "Bearer " + _gcs_token()})
+        try:
+            with urllib.request.urlopen(req, timeout=20) as r:
+                return json.loads(r.read())
+        except urllib.error.HTTPError as e:
+            if e.code == 404:
+                return empty
+            raise
     try:
         with open(STATE, encoding="utf-8") as f:
             return json.load(f)
     except (OSError, ValueError):
-        return {"seen": {}, "spend": {}}
+        return empty
 
 
 def save_state(st: dict) -> None:
+    if STATE_GCS:
+        bucket, obj = _gcs_parts()
+        req = urllib.request.Request(
+            f"https://storage.googleapis.com/upload/storage/v1/b/{bucket}/o?uploadType=media&name={obj}",
+            data=json.dumps(st).encode(), method="POST",
+            headers={"Authorization": "Bearer " + _gcs_token(), "Content-Type": "application/json"})
+        with urllib.request.urlopen(req, timeout=20):
+            return
     os.makedirs(STATE_DIR, exist_ok=True)
     tmp = STATE + ".tmp"
     with open(tmp, "w", encoding="utf-8") as f:
@@ -81,11 +119,12 @@ def save_state(st: dict) -> None:
 
 
 def log(event: dict) -> None:
-    os.makedirs(STATE_DIR, exist_ok=True)
     event["ts"] = datetime.now(timezone.utc).isoformat(timespec="seconds")
-    with open(LOG, "a", encoding="utf-8") as f:
-        f.write(json.dumps(event) + "\n")
-    print(json.dumps(event))
+    if not STATE_GCS:
+        os.makedirs(STATE_DIR, exist_ok=True)
+        with open(LOG, "a", encoding="utf-8") as f:
+            f.write(json.dumps(event) + "\n")
+    print(json.dumps(event), flush=True)
 
 
 def today() -> str:

@@ -29,12 +29,32 @@ pub enum ModelError {
     Manifest(#[from] sc_manifest::ManifestError),
     #[error("model {0} is not in the registry manifest")]
     UnknownModel(String),
+    #[error("unsafe path component in manifest: {0:?}")]
+    UnsafePath(String),
     #[error("http {0}")]
     Http(String),
     #[error("not enough free disk space: need {need} bytes, have {have}")]
     DiskSpace { need: u64, have: u64 },
     #[error(transparent)]
     Io(#[from] std::io::Error),
+}
+
+/// A model id or file name from the manifest must be a single plain path component.
+/// The manifest is signed, so this is defence in depth: even a manifest signed by a
+/// stolen key cannot make the store write outside `<root>/<model_id>/`.
+fn safe_component(name: &str) -> Result<&str, ModelError> {
+    let ok = !name.is_empty()
+        && name != "."
+        && name != ".."
+        && !name.starts_with('.')
+        && name
+            .chars()
+            .all(|c| c.is_ascii_alphanumeric() || matches!(c, '.' | '_' | '-'));
+    if ok {
+        Ok(name)
+    } else {
+        Err(ModelError::UnsafePath(name.to_string()))
+    }
 }
 
 /// A directory of local model files, organised as `<root>/<model_id>/<file>`.
@@ -102,6 +122,10 @@ impl ModelStore {
             .find(model_id)
             .ok_or_else(|| ModelError::UnknownModel(model_id.to_string()))?
             .clone();
+        safe_component(model_id)?;
+        for f in &entry.files {
+            safe_component(&f.name)?;
+        }
 
         let dir = self.model_dir(model_id);
         fs::create_dir_all(&dir).await?;
@@ -354,5 +378,20 @@ mod tests {
             store.resolve_local("x", None),
             Err(ModelError::NotFound(_))
         ));
+    }
+}
+
+#[cfg(test)]
+mod path_tests {
+    use super::safe_component;
+
+    #[test]
+    fn rejects_paths_outside_the_model_dir() {
+        for bad in ["", ".", "..", "../x.gguf", "a/b.gguf", "/etc/passwd", ".hidden", "a\\b", "x y"] {
+            assert!(safe_component(bad).is_err(), "{bad:?} must be rejected");
+        }
+        for good in ["qwen2.5-0.5b-instruct-q4_k_m", "qwen2.5-0.5b-instruct-q4_k_m.gguf", "model_00001-of-00002.gguf"] {
+            assert!(safe_component(good).is_ok(), "{good:?} must be accepted");
+        }
     }
 }

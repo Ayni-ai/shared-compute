@@ -1,0 +1,6 @@
+# SHA-256 of each provider-daemon binary on the provider-latest release (published 2026-09-06).
+# The installer refuses any binary that does not match. After a new release, update
+# this file in a reviewed change: gh release download provider-latest && shasum -a 256 provider-daemon-*
+e2d068e6aaf8067ee1879aa4d81e4d6652831a21caeb5bb0ab73c27daea73b76  provider-daemon-darwin-arm64
+d3675b1bed380d6cd8b633596f5e73319608b4df649b79b6120b4c1a4e2fa997  provider-daemon-linux-x64
+9f3b4cfd9c4ca5732fbd64f08b05a8b4161ffeba2b504d90dc1ec6b05fc25c4c  provider-daemon-windows-x64.exe

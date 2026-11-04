@@ -60,6 +60,22 @@ enum Cmd {
         #[arg(long)]
         key: PathBuf,
     },
+    /// Write the canonical bytes the signature covers, for signing outside this tool
+    /// (Cloud KMS: `gcloud kms asymmetric-sign --input-file <out>`).
+    Canonical {
+        #[arg(long)]
+        manifest: PathBuf,
+        #[arg(long)]
+        out: PathBuf,
+    },
+    /// Write manifest.json.sig from a raw 64-byte Ed25519 signature made elsewhere
+    /// (e.g. by Cloud KMS). Run `verify` afterwards.
+    AttachSig {
+        #[arg(long)]
+        manifest: PathBuf,
+        #[arg(long)]
+        raw_sig: PathBuf,
+    },
     /// Verify manifest.json.sig against a public key (base64 string or a .pub file).
     Verify {
         #[arg(long)]
@@ -82,6 +98,8 @@ fn main() -> Result<()> {
             files,
         } => add(&manifest, &model_id, &arch, &quant, &hw_class, ctx, &files),
         Cmd::Sign { manifest, key } => sign(&manifest, &key),
+        Cmd::Canonical { manifest, out } => canonical(&manifest, &out),
+        Cmd::AttachSig { manifest, raw_sig } => attach_sig(&manifest, &raw_sig),
         Cmd::Verify { manifest, pub_key } => verify(&manifest, &pub_key),
     }
 }
@@ -235,6 +253,30 @@ fn sign(manifest_path: &Path, key_path: &Path) -> Result<()> {
     fs::write(&sig_path, format!("{sig}\n"))?;
     println!("wrote {}", sig_path.display());
     println!("public key: {}", encode_key(sk.verifying_key().as_bytes()));
+    Ok(())
+}
+
+fn sig_path_for(manifest_path: &Path) -> PathBuf {
+    manifest_path.with_file_name(format!(
+        "{}.sig",
+        manifest_path.file_name().unwrap().to_string_lossy()
+    ))
+}
+
+fn canonical(manifest_path: &Path, out: &Path) -> Result<()> {
+    let manifest = load_manifest(manifest_path)?;
+    fs::write(out, manifest.canonical_bytes()?).with_context(|| format!("write {}", out.display()))?;
+    println!("wrote {}", out.display());
+    Ok(())
+}
+
+fn attach_sig(manifest_path: &Path, raw_sig: &Path) -> Result<()> {
+    let raw = fs::read(raw_sig).with_context(|| format!("read {}", raw_sig.display()))?;
+    anyhow::ensure!(raw.len() == 64, "an Ed25519 signature is 64 bytes, got {}", raw.len());
+    let sig_path = sig_path_for(manifest_path);
+    let b64 = encode_key(&raw); // standard base64, the same encoding `sign` writes
+    fs::write(&sig_path, format!("{b64}\n"))?;
+    println!("wrote {}", sig_path.display());
     Ok(())
 }
 
