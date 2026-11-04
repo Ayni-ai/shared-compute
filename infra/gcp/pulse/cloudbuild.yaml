@@ -1,0 +1,10 @@
+substitutions:
+  _REGION: us-east1
+  _REPO: ayni
+  _TAG: latest
+steps:
+  - name: gcr.io/cloud-builders/docker
+    args: ["build", "-f", "infra/gcp/pulse/Dockerfile",
+           "-t", "${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO}/pulse:${_TAG}", "."]
+images:
+  - "${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO}/pulse:${_TAG}"

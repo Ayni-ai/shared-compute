@@ -2,8 +2,13 @@
 # Build + sign the model manifest and upload it (plus any new model files) to the R2
 # bucket behind models.ayni-ai.com.
 #
+# Signing happens in Cloud KMS (key registry-signer, imported 2026-11 from the original
+# Ed25519 seed so the pinned public key did not change). No signing key exists on disk.
+# Run it from Cloud Shell or Cloud Build (infra/gcp/registry-publish.cloudbuild.yaml),
+# not from a laptop.
+#
 # Prereqs:
-#   - secrets/ayni-registry-signing.key
+#   - roles/cloudkms.signer on REGISTRY_KMS_KEY for the caller
 #   - rclone installed
 #   - either an rclone remote named "r2", OR these env vars:
 #       R2_ACCOUNT_ID R2_ACCESS_KEY_ID R2_SECRET_ACCESS_KEY
@@ -16,7 +21,9 @@ cd "$(dirname "$0")/.."
 
 BUCKET="${SC_R2_BUCKET:-models}"
 STAGE="${SC_REGISTRY_STAGE:-.registry}"
-KEY="secrets/ayni-registry-signing.key"
+REGISTRY_KMS_KEY="${REGISTRY_KMS_KEY:-projects/ayni1-507216/locations/us-east1/keyRings/ayni/cryptoKeys/registry-signer/cryptoKeyVersions/1}"
+# Break-glass only: sign with a local seed file. Never the default.
+LOCAL_KEY="${ALLOW_LOCAL_REGISTRY_KEY:-}"
 MODELCTL="${MODELCTL:-model-registry/target/release/sc-modelctl}"
 [[ -x "$MODELCTL" ]] || MODELCTL="model-registry/target/debug/sc-modelctl"
 [[ -x "$MODELCTL" ]] || { echo "build sc-modelctl first: (cd model-registry && cargo build)"; exit 1; }
@@ -51,12 +58,21 @@ case "${1:-}" in
     echo "staged. run: $0 push"
     ;;
   push)
-    [[ -f "$KEY" ]] || { echo "missing $KEY"; exit 1; }
-    "$MODELCTL" sign --manifest "$STAGE/manifest.json" --key "$KEY"
+    if [[ -n "$LOCAL_KEY" ]]; then
+      echo "WARNING: signing with the local key $LOCAL_KEY (break-glass)" >&2
+      "$MODELCTL" sign --manifest "$STAGE/manifest.json" --key "$LOCAL_KEY"
+    else
+      "$MODELCTL" canonical --manifest "$STAGE/manifest.json" --out "$STAGE/.canonical"
+      gcloud kms asymmetric-sign --version "$REGISTRY_KMS_KEY" \
+        --input-file "$STAGE/.canonical" --signature-file "$STAGE/.raw-sig"
+      "$MODELCTL" attach-sig --manifest "$STAGE/manifest.json" --raw-sig "$STAGE/.raw-sig"
+      rm -f "$STAGE/.canonical" "$STAGE/.raw-sig"
+    fi
+    # Never publish a manifest the pinned key would reject.
     "$MODELCTL" verify --manifest "$STAGE/manifest.json" --pub model-registry/PUBKEY
     setup_rclone
     # model files first (immutable content), then manifest + sig (the switch)
-    rclone copy --progress --exclude 'manifest.json*' "$STAGE" "r2:$BUCKET"
+    rclone copy --progress --exclude 'manifest.json*' --exclude '.*' "$STAGE" "r2:$BUCKET"
     rclone copyto "$STAGE/manifest.json"     "r2:$BUCKET/manifest.json"
     rclone copyto "$STAGE/manifest.json.sig" "r2:$BUCKET/manifest.json.sig"
     echo
